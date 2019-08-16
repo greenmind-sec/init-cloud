@@ -91,10 +91,10 @@ apt-get install -y nodejs
 > Costumamos usar ele para instalar os requisitos ou uma biblioteca especifica
 
 - NPM run
->
+> Usamos ele para executar algo, um exemplo é o **npm run build**.
 
 - NPM serve
->
+> Podemos usar o **npm serve** para servir uma aplicação.
 
 ## Mysql
 ### O que é
@@ -115,10 +115,28 @@ mysql-server-core-5.7 - MySQL database server binaries
 
 ### Configurando
 - Configurações de segurança
-- Criação de banco
-- Exportar/Importar DB
-- Inserir na inicialização do sistema
+```sh
+# Criando usario
+CREATE USER 'novousuario'@'localhost' IDENTIFIED BY 'password';
+# Dando permissão ao usuario
+GRANT ALL PRIVILEGES ON * . * TO 'novousuario'@'localhost';
+```
 
+- Criação de banco
+> Podemos entrar no banco com o nosso usuario criado anteriormente é realizar
+```sh
+create database nome;
+```
+
+- Exportar/Importar DB
+```sh
+# Exportar
+mysqldump -uroot -p nome_do_banco > /home/bkp.database.db
+
+# Importar
+mysql -uroot -p
+mysql> source /home/bkp.database.db
+```
 
 ## PM2
 ### O que é
@@ -131,9 +149,29 @@ npm install pm2@latest -g
 ```
 
 ### Configurando
+```sh
+# configura o pm2 para inicializar com o sistema operacional.
+pm2 startup
+```
+
 - Subindo projeto
+```sh
+# No -i, é possível delimitar o número de CPUs usadas
+pm2 start app.js -i 1
+```
+
 - Criando arquivo de configuração
+```sh
+#Depois de iniciar todos os aplicativos que você deseja gerenciar, salve a lista que deseja recuperar na reinicialização da máquina com:
+pm2 save
+```
+
 - Verificar se mesmo o serviço caindo ele volte usando o resurrect
+```sh
+# Ressuscitar manualmente os processos
+# Isso traz de volta processos salvos anteriormente (via pm2 save):
+pm2 resurrect
+```
 
 ## NGINX
 ### O que é
@@ -172,5 +210,14 @@ apt-get install ufw
 
 ### Configurando
 - Verificando os perigos de usar sem firewall
+> Uma porta exporta pode ser um problema pois pessoas podem acabar tentando acesso um serviço, por exemplo o mysql.
+
 - Cuidados a serem tomados
+> É recomendado que apenas as portas **22** (mesmo assim é recomendado estar usando uma VPN),**80** (HTTP), **443** (HTTPS).
+
 - Criando firewall
+> Criando firewall para a porta 3306 **mysql**.
+```sh
+ufw enable
+ufw deny 3306
+```
